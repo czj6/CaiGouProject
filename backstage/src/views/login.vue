@@ -1,10 +1,28 @@
 <template>
   <div>
   
-    
+      <div>
     <img class="cai"  id="picture"  src="../assets/ed.png" >
      <span id="UI" @click="login">菜购</span>
-   
+    </div>
+     <div id="login" class="login_form1" >
+    <span id="word"  @click="login">菜购</span>
+   <img   src="../assets/login2.png" id="message2">
+    </div>
+    <div class="login_form"  id="login1" >
+        <span id="a"   @click="login">————</span>
+        <span id="b" >Login</span>
+        <el-input id="account"   class="input"  placeholder="请输入账号" v-model="input2" ></el-input>
+        <el-input show-password style=" width: 250px;position:absolute;left:55px;top:240px;" id="password" class="input"  placeholder="请输入密码" v-model="input" ></el-input>
+    <div id="choose" >
+      <el-radio v-model="radio" label="1">超市</el-radio>
+      <el-radio v-model="radio" label="2">店铺</el-radio>
+    </div>
+     <button id="login2"  class="login_btn el-button el-button&#45;&#45;primary is-round" type="primary" round  >登录</button>
+    <div style="margin-top: 10px">
+    <span id="c" >忘记密码？</span>
+    </div>
+    </div>
      
   </div>
   
