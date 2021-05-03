@@ -2,6 +2,8 @@
   <div class="container">
     <div class="headSection">
       <slot name="headSection"></slot>
+      <slot name="contentBox"></slot>
+      <slot name="footerSection"></slot>
     </div>
   </div>
 </template>
@@ -21,6 +23,5 @@ export default {
   bottom: 0;
   margin-top: 60px;
   margin-left: 200px;
-  background-color: pink;
 }
 </style>
