@@ -1,5 +1,5 @@
 <template>
-  <div class="sideBarItem" v-on:click="$emit('changeStyle')">
+  <div class="sideBarItem" v-on:click="$emit('changeStyle');gotoTarget()">
     <span class="text">{{text}}</span>
   </div>
 </template>
@@ -10,6 +10,9 @@ export default {
   props: {
     text: {
       type: String
+    },
+    url: {
+      type: String,
     }
   },
   data () {
@@ -18,7 +21,12 @@ export default {
     }
   },
   methods: {
-
+    gotoTarget() {
+      let curUrl = this.$router.history.current.path;
+      if (!(curUrl == this.url)) {
+        this.$router.push({path: this.url})
+      }
+    }
   }
 }
 </script>

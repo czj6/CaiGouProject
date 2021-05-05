@@ -1,6 +1,6 @@
 <template>
   <div class="sideBar">
-    <side-bar-item v-for="item in items" @changeStyle="onChangeStyle(item.id)" :key="item.id" :text="item.text" v-bind:class="[defaultActive==item.id? 'sideBarItemv' : '']"></side-bar-item>
+    <side-bar-item v-for="item in items" @changeStyle="onChangeStyle(item.id)" :key="item.id" :text="item.text" :url="item.url" v-bind:class="[defaultActive==item.id? 'sideBarItemv' : '']"></side-bar-item>
   </div>
 </template>
 <script>
@@ -16,10 +16,12 @@ export default {
       default: function () {
         return [{
           id: 1,
-          text: '菜谱列表'
+          text: '菜谱列表',
+          url: '/menu/menulist'
         }, {
           id: 2,
-          text: '菜谱管理'
+          text: '菜谱管理',
+          url: '/menu/manage'
         }]
       }
     }

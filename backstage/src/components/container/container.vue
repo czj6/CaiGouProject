@@ -1,10 +1,8 @@
 <template>
   <div class="container">
-    <div class="headSection">
-      <slot name="headSection"></slot>
-      <slot name="contentBox"></slot>
-      <slot name="footerSection"></slot>
-    </div>
+    <slot name="headSection"></slot>
+    <slot name="contentBox"></slot>
+    <slot name="footerSection"></slot>
   </div>
 </template>
 
