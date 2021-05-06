@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import login from '../views/orderlist'
 import login from '../views/login'
+import login from '../views/orderdetails'
 Vue.use(VueRouter)
 
 const routes = [{
@@ -14,6 +15,12 @@ const routes = [{
   
     
         path: '/orderlist',
+        component: login
+    },
+    {
+  
+    
+        path: '/orderdetails',
         component: login
     },
 ]
