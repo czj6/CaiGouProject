@@ -1,40 +1,39 @@
 <template>
-  <div>
-  
-      <div>
-    <img class="cai"  id="picture"  src="../assets/ed.png" >
-     <span id="UI" @click="login">菜购</span>
+  <div class="login">
+    <div class="logo-box">
+      <img src="../assets/ed.png" >
+      <span id="UI" @click="login">菜购</span>
     </div>
-     <div id="login" class="login_form1" >
-    <span id="word"  @click="login">菜购</span>
-   <img   src="../assets/login2.png" id="message2">
+    <div class="form-box">
+      <div class="login_form_left" >
+        <span @click="login">菜购</span>
+        <img src="../assets/login2.png">
+      </div>
+      <div class="login_form_right">
+        <div class="login_text">
+          <span id="b" >Login</span>
+          <p class="login_text_underline"></p>
+        </div>
+        <div class="login_ipt_box">
+          <el-input class="input login_ipt"  placeholder="请输入账号" v-model="input2" ></el-input>
+          <el-input show-password  id="password" class="input login_ipt"  placeholder="请输入密码" v-model="input" ></el-input>
+        </div>
+        <div class="choose_box">
+          <div id="choose" >
+            <el-radio style="margin-right: 13px;" v-model="radio" label="1">超市</el-radio>
+            <el-radio style="margin-right: 13px;" v-model="radio" label="2">店铺</el-radio>
+          </div>
+          <span id="c" >忘记密码？</span>
+        </div>
+        <button class="login_btn el-button is-round" type="primary" round  >登录</button>
+      </div>
     </div>
-    <div class="login_form"  id="login1" >
-        <span id="a"   @click="login">————</span>
-        <span id="b" >Login</span>
-        <el-input id="account"   class="input"  placeholder="请输入账号" v-model="input2" ></el-input>
-        <el-input show-password style=" width: 250px;position:absolute;left:55px;top:240px;" id="password" class="input"  placeholder="请输入密码" v-model="input" ></el-input>
-    <div id="choose" >
-      <el-radio v-model="radio" label="1">超市</el-radio>
-      <el-radio v-model="radio" label="2">店铺</el-radio>
-    </div>
-     <button id="login2"  class="login_btn el-button el-button&#45;&#45;primary is-round" type="primary" round  >登录</button>
-    <div style="margin-top: 10px">
-    <span id="c" >忘记密码？</span>
-    </div>
-    </div>
-     
   </div>
-  
-
-
 </template>
- 
- 
- 
-<script>
-//  import { userLogin } from '../../api/api';
 
+
+
+<script>
   export default {
     data() {
       return {
@@ -70,125 +69,142 @@
           this.$message.error('请输入密码');
           return;
         }
- 
       },
-         handleClick(tab, event) {
+      handleClick(tab, event) {
         console.log(tab, event);
       }
     }
   }
 </script>
 <style>
+  .login {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #F5F5FA;
+  }
   .login_form {
     padding-top: 10%;
     padding-left: 10%;
     padding-right: 10%;
-      
   }
-  #picture{
-    position:absolute; 
-    left:100px; 
-    top:50px;
+  .logo-box {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 20px;
+    left: 50px;
+  }
+  .logo-box img{
     width: 50px;
     height:50px;
-    border-radius: 50% ;
-}
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  .logo-box span{
+     color: #000000;
+     font-size:30px;
+ }
+ .form-box {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+ }
   .login_form1 {
     padding-top: 10%;
     padding-left: 10%;
     padding-right: 10%;
-      
-  }
-  #login{
-      background-color: #00BB7a;
-       position:absolute; 
-       left:400px; 
-       top:170px;
-       width: 60px;
-       height:350px;
-  }
-  #login1{
-    background-color: #FFFFFF; 
-    position:absolute;
-    left:765px;
-    top:170px;
-    width: 60px;
-    height:350px;
 
   }
-  #login2{
-      background-color: #00BB7a;
-       color: #ffffff;
-       position:absolute;
-        left:50px;
-         top:400px;
+  .login_form_left{
+    background-color: #00BB7a;
+    width: 400px;
+    height:500px;
+    position: relative;
+  }
+  .login_form_right {
+    width: 400px;
+    height: 500px;
+    background-color: #fff;
+    text-align: center;
+  }
+  .login_form_left span {
+    display: inline-block;
+    color: #FFFFFF;
+    font-size:30px;
+    margin-top: 30px;
+    margin-left: 40px;
+  }
+  .login_form_left img {
+    position: absolute;
+    width: 370px;
+    top: 40%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .login_text {
+    color: #000000;
+    font-size:40px;
+    text-align: center;
+    margin-top: 40px;
+  }
+  .login_text_underline {
+    padding: 0;
+    margin: 0;
+    margin: 15px auto;
+    width: 40px;
+    height: 1px;
+    background-color: #00BB7a;
+  }
+  .login_ipt_box {
+    margin: 50px auto;
+    text-align: center;
+  }
+  .login_ipt {
+    width: 300px !important;
+    margin: 10px 0;
+  }
+  .choose_box {
+    width: 300px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
   }
   #account{
       width: 250px;
-      position:absolute; 
-      left:-100px; 
-      top:0px;
   }
   #choose{
-       position:absolute;
-       width: 150px;
-        left:50px; 
-        top:330px;
+      width: 150px;
   }
-  
-  #word{
-      color: #FFFFFF;
-      font-size:30px;
-      position:absolute;
-       left:40px; 
-       top:50px;
-  }
+
   #a{
     color: #00BB7a;
     font-size:10px;
-    position:absolute;
-     left:160px; 
-     top:130px;
-
   }
   #b{
       color: #000000;
       font-size:40px;
-      position:absolute;
-       left:130px; 
-       top:80px;
   }
   #c{
     float: right;
-    
     font-size:10px;
-    position:absolute;
-     left:300px; 
-     top:350px;
-
   }
   #message2{
-    position:absolute; 
-    left:10px; 
-    top:180px;
     width: 350px;
     height:300px;
   }
- #UI{
-     color: #000000;
-     font-size:30px;
-     position:absolute;
-    left:170px;
-     top:50px;
- }
   .login_logo {
     height: 100%;
   }
   .login_btn {
     width: 300px;
-    font-size: 16px;
-    background-color:  #77c49d; 
-
-    
+    font-size: 16px !important;
+    background-color: #00BB7a !important;
+    margin: 25px auto !important;
+    color: #fff !important;
   }
 </style>

@@ -4,13 +4,14 @@ import menuList from '../views/menuList.vue'
 import menuManage from '../views/menuManage.vue'
 import menuDetail from '../views/menuDetail.vue'
 import menuBar from '../views/menu.vue'
+import login from '../views/login.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    component: menuList
+    component: login
   },
   {
     path: '/menu/',
