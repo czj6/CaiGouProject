@@ -6,7 +6,7 @@
           <span style="font-size: 16px; font-weight: bolder;">菜谱列表</span>
           <div class="search">
             <span>搜索</span>
-            <input type="text" class="ipt">
+            <input type="text" v-model="keyword" class="ipt" v-on:keyup.enter="searchByKeyword">
           </div>
           <div class="cuisine">
             <span>菜系</span>
@@ -20,35 +20,16 @@
       </template>
       <template v-slot:contentBox>
         <div class="contentBox">
-          <div class="item">
+          <div v-for="item in currentPage" :key="item.id" class="item">
             <div class="item-img-box">
-              <img src="../assets/test.jpg" alt="">
+              <img :src="item.avatar" alt="">
             </div>
             <div class="item-text">
-              <p>宫保鸡丁</p>
+              <p>{{item.name}}</p>
               <p>材料：</p>
             </div>
-            <div class="btn">已上架</div>
-          </div>
-          <div class="item">
-            <div class="item-img-box">
-              <img src="../assets/test.jpg" alt="">
-            </div>
-            <div class="item-text">
-              <p>宫保鸡丁</p>
-              <p>材料：</p>
-            </div>
-            <div class="btn">已上架</div>
-          </div>
-          <div class="item">
-            <div class="item-img-box">
-              <img src="../assets/test.jpg" alt="">
-            </div>
-            <div class="item-text">
-              <p>宫保鸡丁</p>
-              <p>材料：</p>
-            </div>
-            <div class="btn">已上架</div>
+            <div v-if="item.status==1" class="btn">已上架</div>
+            <div v-if="item.status==0" class="down-btn">已下架</div>
           </div>
         </div>
       </template>
@@ -58,7 +39,10 @@
           <el-pagination
             background
             layout="prev, pager, next"
-            :total="50">
+            :page-size="5"
+            :total="total"
+            :current-page="currentNum"
+            v-on:current-change="test">
           </el-pagination>
           <div class="defaultBtn">下一页</div>
         </div>
@@ -70,11 +54,23 @@
 <script>
 import container from '../components/container/container'
 import {Pagination} from 'element-ui'
+import axios from 'axios'
 export default {
   name: 'menuList',
   components: {
     container,
     [Pagination.name]: Pagination
+  },
+  data() {
+    return {
+      keyword: '',
+      allMune: [],
+      currentPage: [],
+      likeMune: {},
+      currentNum: 1,
+      total: 0,
+      flag: 0, // 0表示全部，1表示按关键词查找， 2表示按菜系查找
+    }
   },
   mounted() {
     console.log(this.$route)
@@ -82,8 +78,57 @@ export default {
   methods: {
     logMsg() {
       console.log(1);
+    },
+    async searchByKeyword() {
+      this.flag = 1
+      this.currentNum = 1
+      this.likeMune = []
+      let res = await axios.get('http://localhost:8080/menu/findLike',{
+        params: {
+          name: this.keyword,
+          pageNum: this.currentNum
+        }
+      })
+      this.likeMune[this.currentNum] = res.data.data.content
+      this.total = res.data.data.totalElements
+      this.currentPage = this.likeMune[this.currentNum].slice(2)
+    },
+    test(e) {
+      this.currentNum = e
+      this.searchByPage()
+    },
+    async searchByPage() {
+      let res;
+      if (this.flag == 0) {
+        if (this.allMune[this.currentNum] == undefined) {
+          res = await axios.get(`http://localhost:8080/menu/findAll/${this.currentNum}`);
+          this.allMune[this.currentNum] = res.data.data.content
+          this.total = res.data.data.totalElements
+        }
+        this.currentPage = this.allMune[this.currentNum].slice(2)
+      }else if (this.flag == 1) {
+        if (this.likeMune[this.currentNum] == undefined) {
+          res = await axios.get('http://localhost:8080/menu/findLike',{
+            params: {
+              name: this.keyword,
+              pageNum: this.currentNum
+            }
+          })
+          this.likeMune[this.currentNum] = res.data.data.content
+          this.total = res.data.data.totalElements
+        }
+        this.currentPage = this.likeMune[this.currentNum].slice(2)
+      }
     }
   },
+  created() {
+    axios.get('http://localhost:8080/menu/findAll/1').then(res => {
+      let data = res.data;
+      this.currentPage = data.data.content.slice(2)
+      this.allMune[this.currentNum] = data.data.content
+      this.total = res.data.data.totalElements
+    })
+  }
 }
 </script>
 
@@ -146,9 +191,18 @@ export default {
 }
 .item-img-box img{
   height: 100px;
+  width: 75px;
 }
 .btn {
   background-color: #07EB31;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 5px 7px;
+  border-radius: 4px;
+  color: #fff;
+}
+.down-btn {
+  background-color: red;
   font-size: 14px;
   font-weight: bold;
   padding: 5px 7px;

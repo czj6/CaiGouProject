@@ -1,119 +1,115 @@
 <template>
   <div id="body">
-      <topline/>
-      <div id="nav_left">
-        
-          <a id="bbs">订单列表
-            
-          <div id="line1"> </div>
-            </a>
-      </div>
-   
-<div id="nav_right">
-         <div id="U2" style="font-style:border; margin-top:70px;margin-right:1100px">订单管理</div>
-        <el-table
-            :data="tableData"
-            stripe
-            style="width: 80%;border: #BBBBBB 2px solid;left: 50px;top: 20px">
+      <headBar title="采购超市后台"></headBar>
+      <side-bar></side-bar>
+      <container>
+        <template v-slot:headSection>
+          <div class="headSection">
+            订单管理
+          </div>
+        </template>
+        <template v-slot:contentBox>
+          <div id="nav_right">
+            <el-table
+                :data="tableData"
+                stripe
+                style="width: 80%;border: #BBBBBB 2px solid;">
 
-            <el-table-column
-                prop="bbs"
-                label="订单编号">
-            </el-table-column>
+                <el-table-column
+                    prop="bbs"
+                    label="订单编号">
+                </el-table-column>
 
-            <el-table-column
-                prop="num"
-                label="配送方式">
-            </el-table-column>、
-             <el-table-column
-                prop="status"
-                label="订单状态">
-            </el-table-column>
-             <el-table-column
-                prop="content"
-                label="订单详情">
-            </el-table-column>
-        </el-table>
-    
-      <router-view></router-view>
-          <div class="block" style="margin-top: 50px">
-<el-button id="lastpage" style="width: 100px;height: 50px; position:absolute; left:600px; top:640px; background-color:#2379EB"  type="primary" round  >上一页</el-button>
-    <el-pagination
-    layout="prev, pager, next"
-    :total="50" style="position:absolute; left:730px; top:650px;" >
-    
-  </el-pagination>
-  <el-button id="nextpage" style="width: 100px;height: 50px;position:absolute; left:1000px; top:640px; background-color:#2379EB"  type="primary" round  >下一页</el-button>
-  
+                <el-table-column
+                    prop="num"
+                    label="配送方式">
+                </el-table-column>、
+                <el-table-column
+                    prop="status"
+                    label="订单状态">
+                </el-table-column>
+                <el-table-column
+                    prop="content"
+                    label="订单详情">
+                </el-table-column>
+            </el-table>
 
-  
-</div>
-      
-        
-        
-     
-            </div>
-          
-    
+          </div>
+        </template>
+         <template v-slot:footerSection>
+          <div class="footerSection">
+            <div class="defaultBtn">上一页</div>
+            <el-pagination
+              background
+              layout="prev, pager, next"
+              :total="50">
+            </el-pagination>
+            <div class="defaultBtn">下一页</div>
+          </div>
+        </template>
+      </container>
   </div>
 </template>
 
 <script>
-import topline from '../component/topline'
+import headBar from '../components/head/head'
+import sideBar from '../components/sideBar/sideBar'
+import container from '../components/container/container'
+import {Pagination} from 'element-ui'
 import axios from 'axios'
 export default {
     data(){
         return{
             tableData:[{
-             
+
                 num:'',
                 content:'订单详情',
             },{
-             
-                num:'',
-         
-            },{
-               
-                num:'',
-             
-            },{
-              num:'',
-             
-            },{
-             
-                num:'',
-           
-
-            },{
-               
-                num:'',
-          
-            },{
-               
-                num:'',
-     
-            },{
-              num:'',
-            },{
-             
-                num:'',
-            
-            },{
-               
 
                 num:'',
-        
+
             },{
-               
+
                 num:'',
-        
+
             },{
               num:'',
 
             },{
-             
+
                 num:'',
-        
+
+
+            },{
+
+                num:'',
+
+            },{
+
+                num:'',
+
+            },{
+              num:'',
+            },{
+
+                num:'',
+
+            },{
+
+
+                num:'',
+
+            },{
+
+                num:'',
+
+            },{
+              num:'',
+
+            },{
+
+                num:'',
+
             }
             ]
         }
@@ -133,33 +129,25 @@ export default {
     created(){
         this.getListData()
     },
-    name:'usermeeting',
-    components: { topline },
-
+    name:'orderlist',
+    components: {
+      headBar,
+      sideBar,
+      container,
+      [Pagination.name]: Pagination
+    },
 }
 </script>
 
-<style>
-#body{
-    width: 100%;
-    height: 600px;
-}
-#nav_left{
-    margin-top: 0px;
-    border: rgb(0, 0, 0) 2px solid;
-    width: 15%;
-    height: 650px;
-    float: left;
-    padding-top: 20px;
-}
+<style scoped>
 .nav_right{
     margin:0px;
-   
+
     padding: 0px;
     width: 60%;
     height: 400px;
     float: left;
-   
+
 }
 #bbs{
    top: 120px;
@@ -188,11 +176,38 @@ export default {
 }
 
 #line1{
-     margin-top: 20px;
-    height: 4px;
-    width: 100%;
- 
-     border: rgb(0, 0, 0) 0px solid;
+  margin-top: 20px;
+  height: 4px;
+  width: 100%;
+  border: rgb(0, 0, 0) 0px solid;
 }
 
+.headSection {
+  font-size: 14px;
+  font-weight: bold;
+}
+.btn {
+  background-color: #EB0707;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 10px 15px;
+  border-radius: 8px;
+  color: #fff;
+}
+
+.defaultBtn {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #4F97F7;
+  border-radius: 17px;
+  color: #fff;
+  font-size: 16px;
+}
+
+.footerSection {
+  width: 70%;
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-around;
+}
 </style>
