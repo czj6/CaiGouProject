@@ -6,7 +6,7 @@
     </div>
     <div class="form-box">
       <div class="login_form_left" >
-        <span @click="login">菜购</span>
+        <span>菜购</span>
         <img src="../assets/login2.png">
       </div>
       <div class="login_form_right">
@@ -15,8 +15,8 @@
           <p class="login_text_underline"></p>
         </div>
         <div class="login_ipt_box">
-          <el-input class="input login_ipt"  placeholder="请输入账号" v-model="input2" ></el-input>
-          <el-input show-password  id="password" class="input login_ipt"  placeholder="请输入密码" v-model="input" ></el-input>
+          <el-input class="input login_ipt"  placeholder="请输入账号" v-model="userName" ></el-input>
+          <el-input show-password  id="password" class="input login_ipt"  placeholder="请输入密码" v-model="password" ></el-input>
         </div>
         <div class="choose_box">
           <div id="choose" >
@@ -25,7 +25,7 @@
           </div>
           <span id="c" >忘记密码？</span>
         </div>
-        <button class="login_btn el-button is-round" type="primary" round  >登录</button>
+        <button class="login_btn el-button is-round" type="primary" round @click="login" >登录</button>
       </div>
     </div>
   </div>
@@ -34,16 +34,17 @@
 
 
 <script>
+import storage from '../storage/storage'
   export default {
     data() {
       return {
         userName: '',
         password: '',
-         activeName: 'second',
+        activeName: 'second',
         activeName: "first",
-         input: '',
-         input2: '',
-          radio: '1',
+        input: '',
+        input2: '',
+        radio: '1',
         isBtnLoading: false
       }
     },
@@ -60,7 +61,7 @@
       }
     },
     methods: {
-      login() {
+      async login() {
         if (!this.userName) {
           this.$message.error('请输入用户名');
           return;
@@ -68,6 +69,22 @@
         if (!this.password) {
           this.$message.error('请输入密码');
           return;
+        }
+        let res = await this.axios.post('http://localhost:8083/adminUser/login',{
+          name: this.userName,
+          password: this.password
+        })
+        console.log(res.data);
+        if (res.data.adminUser) {
+          storage.setItem('token',res.data.token)
+          if (this.radio == 1) {
+            this.$router.push({path: '/supermarket'})
+          }
+          if (this.radio == 2) {
+            this.$router.push({path: '/menu'})
+          }
+        }else{
+          this.$message.error('信息错误');
         }
       },
       handleClick(tab, event) {

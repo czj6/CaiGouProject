@@ -4,7 +4,7 @@
       <template v-slot:headSection>
         <div class="headSection">
           <div class="ipt-box">
-            <input class="manage-ipt" type="text" placeholder="请输入菜名">
+            <input class="manage-ipt" type="text" placeholder="请输入菜名" v-model="keyword" v-on:keyup.enter="searchByKeyword">
             <span class="manage-ipt-text">搜索</span>
           </div>
           <div class="manage-btn" @click="showModal">新增菜谱</div>
@@ -13,35 +13,15 @@
 
       <template v-slot:contentBox>
         <div class="contentBox">
-          <div class="item">
+          <div v-for="item in currentPage" :key="item.id" class="item">
             <div class="item-img-box">
-              <img src="../assets/test.jpg" alt="">
+              <img :src="item.avatar" alt="">
             </div>
             <div class="item-text">
-              <p>宫保鸡丁</p>
-              <p>材料：</p>
+              <p>{{item.name}}</p>
+              <p>标签：{{item.tags}}</p>
             </div>
-            <div class="btn">删除</div>
-          </div>
-          <div class="item">
-            <div class="item-img-box">
-              <img src="../assets/test.jpg" alt="">
-            </div>
-            <div class="item-text">
-              <p>宫保鸡丁</p>
-              <p>材料：</p>
-            </div>
-            <div class="btn">删除</div>
-          </div>
-          <div class="item">
-            <div class="item-img-box">
-              <img src="../assets/test.jpg" alt="">
-            </div>
-            <div class="item-text">
-              <p>宫保鸡丁</p>
-              <p>材料：</p>
-            </div>
-            <div class="btn">删除</div>
+            <div class="btn" v-on:click="openDelModal(item.id)">删除</div>
           </div>
         </div>
       </template>
@@ -52,7 +32,10 @@
           <el-pagination
             background
             layout="prev, pager, next"
-            :total="50">
+            :page-size="5"
+            :current-page="currentNum"
+            :total="total"
+            v-on:current-change="test">
           </el-pagination>
           <div class="defaultBtn">下一页</div>
         </div>
@@ -63,31 +46,40 @@
         <div class="modalBody">
           <p>
             <span>菜名：</span>
-            <input type="text">
+            <input type="text" v-model="newName">
           </p>
           <p>
             <span>图片：</span>
-            <el-upload
-              action="https://jsonplaceholder.typicode.com/posts/"
-              list-type="picture-card"
-              >
-              <i class="el-icon-plus"></i>
-            </el-upload>
+            <input type="text" v-model="newUrl">
           </p>
           <p>
-            <span>材料：</span>
-            <textarea name="" id="" cols="30" rows="10"></textarea>
+            <span>标签：</span>
+            <input type="text" v-model="newTags">
+
           </p>
           <p>
             <span>步骤：</span>
-            <textarea name="" id="" cols="30" rows="10"></textarea>
+            <textarea name="" id="" cols="30" rows="10" v-model="newMethod"></textarea>
           </p>
         </div>
       </template>
       <template v-slot:modalFooter>
         <div class="modalFooter">
-          <div class="creatMenu">新增</div>
+          <div class="creatMenu" @click="createMenu">新增</div>
           <div class="back" @click="closeModal">返回</div>
+        </div>
+      </template>
+    </modal>
+    <modal title="确认信息" :isShow="showDelModal" :smallSize="true">
+      <template v-slot:modalBody>
+        <div class="modalBody">
+          <p>您确认要删除此菜谱？</p>
+        </div>
+      </template>
+      <template v-slot:modalFooter>
+        <div class="modalFooter">
+          <div class="creatMenu" @click="deleteMenu">删除</div>
+          <div class="back" @click="closeDelModal">返回</div>
         </div>
       </template>
     </modal>
@@ -98,6 +90,7 @@
 import container from '../components/container/container'
 import modal from '../components/modal/modal'
 import {Pagination, Upload} from 'element-ui'
+import storage from '../storage/storage'
 export default {
   name: 'menuManage',
   components: {
@@ -108,7 +101,22 @@ export default {
   },
   data() {
     return {
-      isShowModal: false
+      isShowModal: false,
+      token: '',
+      currentPage: [],
+      likeMune: [],
+      allMune: [],
+      total: 1,
+      currentNum: 1,
+      keyword: '',
+      flag: 0,
+      keyword: '',
+      showDelModal: false,
+      delId: 0,
+      newName: '',
+      newUrl: '',
+      newTags: '',
+      newMethod: ''
     }
   },
   methods: {
@@ -117,7 +125,126 @@ export default {
     },
     closeModal() {
       this.isShowModal = false
+    },
+    async searchByKeyword() {
+      this.flag = 1
+      this.currentNum = 1
+      this.likeMune = []
+      let res = await this.axios.get('http://localhost:8083/menu/findLike',{
+        params: {
+          name: this.keyword,
+          pageNum: this.currentNum
+        },
+        headers: {
+          token: this.token
+        }
+      })
+      this.likeMune[this.currentNum] = res.data.data.content
+      this.total = res.data.data.totalElements
+      this.currentPage = this.likeMune[this.currentNum].slice(0,3)
+    },
+    test(e) {
+      this.currentNum = e
+      this.searchByPage()
+    },
+   async searchByPage() {
+      let res;
+      if (this.flag == 0) {
+        if (this.allMune[this.currentNum] == undefined) {
+          res = await this.axios.get(`http://localhost:8083/menu/findAll`,{
+            params: {
+              pageNum: this.currentNum
+            },
+            headers: {
+              token: this.token
+            }
+          });
+          this.allMune[this.currentNum] = res.data.data.content
+          this.total = res.data.data.totalElements
+        }
+        this.currentPage = this.allMune[this.currentNum].slice(0,3)
+      }else if (this.flag == 1) {
+        if (this.likeMune[this.currentNum] == undefined) {
+          res = await this.axios.get('http://localhost:8083/menu/findLike',{
+            params: {
+              name: this.keyword,
+              pageNum: this.currentNum
+            },
+            headers: {
+              token: this.token
+            }
+          })
+          this.likeMune[this.currentNum] = res.data.data.content
+          this.total = res.data.data.totalElements
+        }
+        this.currentPage = this.likeMune[this.currentNum].slice(0,3)
+      }
+    },
+    async deleteMenu() {
+      let res = await this.axios.delete('http://localhost:8083/menu/deleteMenu',{
+        params: {
+          id: this.delId
+        },
+        headers: {
+          token: this.token
+        }
+      })
+      console.log(res);
+      if (this.flag == 0) {
+        this.allMune.splice(this.currentNum)
+      }else if (this.flag == 1) {
+        this.likeMune.splice(this.currentNum)
+      }
+      await this.searchByPage()
+      this.showDelModal = false
+      if (res.data.code == 0) {
+        this.$message.success('删除成功')
+      }else{
+        this.$message.error('删除失败')
+      }
+    },
+    openDelModal(id) {
+      this.showDelModal = true
+      this.delId = id
+    },
+    closeDelModal() {
+      this.showDelModal = false
+    },
+    async createMenu() {
+      let res = await this.axios.post('http://localhost:8083/menu/addMenu',{
+        name: this.newName,
+        status: "1",
+        method: this.newMethod,
+        tags: this.newTags,
+        avatar: this.newUrl,
+      },{
+        headers: {
+          token: this.token
+        }
+      })
+      if (res.data.code == 0) {
+        this.$message.success('添加成功')
+        return
+      }else{
+        this.$message.error('添加失败')
+      }
     }
+  },
+  created() {
+    this.token = storage.getItem('token');
+    this.axios.get('http://localhost:8083/menu/findAll',{
+      params: {
+        pageNum: 1
+      },
+      headers: {
+        token: this.token
+      }
+    }).then(res => {
+      let data = res.data;
+      this.currentPage = data.data.content.slice(0,3)
+      this.allMune[this.currentNum] = data.data.content
+      this.total = res.data.data.totalElements
+    })
   }
 }
 </script>
@@ -186,6 +313,7 @@ export default {
 }
 .item-img-box img{
   height: 100px;
+  width: 75px;
 }
 
 .btn {
@@ -258,5 +386,8 @@ export default {
   width: 400px;
   margin: 0 auto;
   justify-content: space-between;
+}
+textarea{
+  outline: none;
 }
 </style>

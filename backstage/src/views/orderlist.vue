@@ -1,7 +1,5 @@
 <template>
   <div id="body">
-      <headBar title="采购超市后台"></headBar>
-      <side-bar></side-bar>
       <container>
         <template v-slot:headSection>
           <div class="headSection">
@@ -56,7 +54,6 @@ import headBar from '../components/head/head'
 import sideBar from '../components/sideBar/sideBar'
 import container from '../components/container/container'
 import {Pagination} from 'element-ui'
-import axios from 'axios'
 export default {
     data(){
         return{
@@ -115,20 +112,9 @@ export default {
         }
     },
     methods: {
-    getListData(){//网络请求数据
-    axios.get('/api/v1/forum/getnum').then((res) => {
-            let data = res.data
-            let i = 0
-            this.tableData.map((item) => {
-                item['num'] = data[i]
-                i++;
-            })
-        })
-    }
+
     },
-    created(){
-        this.getListData()
-    },
+
     name:'orderlist',
     components: {
       headBar,

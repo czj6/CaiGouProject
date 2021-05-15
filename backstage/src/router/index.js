@@ -7,6 +7,7 @@ import menuBar from '../views/menu.vue'
 import login from '../views/login.vue'
 import orderlist from '../views/orderlist.vue'
 import orderdetail from '../views/orderdetails.vue'
+import supermarket from '../views/supermarket.vue'
 
 
 Vue.use(VueRouter)
@@ -19,6 +20,7 @@ const routes = [
   {
     path: '/menu/',
     component: menuBar,
+    redirect: '/menu/menulist',
     children: [
       {
         path: 'menulist',
@@ -27,20 +29,26 @@ const routes = [
       {
         path: 'manage',
         component: menuManage
-      }
+      },
     ]
   },
   {
-    path: '/detail',
+    path: '/detail/:id',
     component: menuDetail
   },
   {
-    path: '/orderlist',
-    component: orderlist
-  },
-  {
-    path: '/orderdetail',
-    component: orderdetail
+    path: '/supermarket',
+    component: supermarket,
+    redirect: '/supermarket/orderlist',
+    children: [{
+        path: 'orderlist',
+        component: orderlist
+      },
+      {
+        path: 'orderdetail',
+        component: orderdetail
+      }
+    ]
   }
 ]
 

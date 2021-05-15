@@ -20,13 +20,13 @@
       </template>
       <template v-slot:contentBox>
         <div class="contentBox">
-          <div v-for="item in currentPage" :key="item.id" class="item">
+          <div v-for="item in currentPage" :key="item.id" class="item" @click="gotoDetail">
             <div class="item-img-box">
               <img :src="item.avatar" alt="">
             </div>
             <div class="item-text">
               <p>{{item.name}}</p>
-              <p>材料：</p>
+              <p>标签：{{item.tags}}</p>
             </div>
             <div v-if="item.status==1" class="btn">已上架</div>
             <div v-if="item.status==0" class="down-btn">已下架</div>
@@ -54,7 +54,7 @@
 <script>
 import container from '../components/container/container'
 import {Pagination} from 'element-ui'
-import axios from 'axios'
+import storage from '../storage/storage'
 export default {
   name: 'menuList',
   components: {
@@ -64,6 +64,7 @@ export default {
   data() {
     return {
       keyword: '',
+      token: '',
       allMune: [],
       currentPage: [],
       likeMune: {},
@@ -73,7 +74,7 @@ export default {
     }
   },
   mounted() {
-    console.log(this.$route)
+
   },
   methods: {
     logMsg() {
@@ -83,10 +84,13 @@ export default {
       this.flag = 1
       this.currentNum = 1
       this.likeMune = []
-      let res = await axios.get('http://localhost:8080/menu/findLike',{
+      let res = await this.axios.get('http://localhost:8083/menu/findLike',{
         params: {
           name: this.keyword,
           pageNum: this.currentNum
+        },
+        headers: {
+          token: this.token
         }
       })
       this.likeMune[this.currentNum] = res.data.data.content
@@ -101,17 +105,27 @@ export default {
       let res;
       if (this.flag == 0) {
         if (this.allMune[this.currentNum] == undefined) {
-          res = await axios.get(`http://localhost:8080/menu/findAll/${this.currentNum}`);
+          res = await this.axios.get(`http://localhost:8083/menu/findAll`,{
+            params: {
+              pageNum: this.currentNum
+            },
+            headers: {
+              token: this.token
+            }
+          });
           this.allMune[this.currentNum] = res.data.data.content
           this.total = res.data.data.totalElements
         }
         this.currentPage = this.allMune[this.currentNum].slice(2)
       }else if (this.flag == 1) {
         if (this.likeMune[this.currentNum] == undefined) {
-          res = await axios.get('http://localhost:8080/menu/findLike',{
+          res = await this.axios.get('http://localhost:8083/menu/findLike',{
             params: {
               name: this.keyword,
               pageNum: this.currentNum
+            },
+            headers: {
+              token: this.token
             }
           })
           this.likeMune[this.currentNum] = res.data.data.content
@@ -119,10 +133,21 @@ export default {
         }
         this.currentPage = this.likeMune[this.currentNum].slice(2)
       }
+    },
+    gotoDetail() {
+      console.log(2);
     }
   },
   created() {
-    axios.get('http://localhost:8080/menu/findAll/1').then(res => {
+    this.token = storage.getItem('token');
+    this.axios.get('http://localhost:8083/menu/findAll',{
+      params: {
+        pageNum: 1
+      },
+      headers: {
+        token: this.token
+      }
+    }).then(res => {
       let data = res.data;
       this.currentPage = data.data.content.slice(2)
       this.allMune[this.currentNum] = data.data.content

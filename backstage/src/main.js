@@ -2,9 +2,11 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import VueAxios from 'vue-axios'
+import axios from 'axios'
 import 'element-ui/lib/theme-chalk/index.css'
 
-import { Button, Input, TableColumn, Table, Switch, Menu, RadioButton, Card, Radio,RadioGroup,MenuItem,Form,Checkbox,CheckboxGroup,Dialog,Tabs } from 'element-ui'
+import { Message , Button, Input, TableColumn, Table, Switch, Menu, RadioButton, Card, Radio,RadioGroup,MenuItem,Form,Checkbox,CheckboxGroup,Dialog,Tabs } from 'element-ui'
 
 Vue.config.productionTip = false
 Vue.component(Button.name, Button)
@@ -24,6 +26,8 @@ Vue.component(CheckboxGroup.name,CheckboxGroup)
 Vue.component(Dialog.name,Dialog)
 Vue.component(Tabs.name, Tabs)
 
+Vue.use(VueAxios, axios)
+Vue.prototype.$message = Message;
 
 new Vue({
   router,

@@ -1,6 +1,6 @@
 <template>
   <div class="mask" v-show="isShow" >
-    <div class="modal-box">
+    <div class="modal-box" v-bind:class="{'small-size': smallSize }">
       <div class="modal-head">{{title}}</div>
       <slot name="modalBody"></slot>
       <slot name="modalFooter"></slot>
@@ -16,6 +16,14 @@ export default {
       type: String
     },
     isShow: {
+      type: Boolean,
+      default: false
+    },
+    bigSize: {
+      type: Boolean,
+      default: true, // 1大 2小
+    },
+    smallSize: {
       type: Boolean,
       default: false
     }
@@ -41,13 +49,17 @@ export default {
   background-color: rgba(0, 0, 0, .45);
 }
 .modal-box {
-  width: 700px;
-  height: 530px;
+  width: 650px;
+  height: 450px;
   background-color: #eee;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50% ,-50%);
+}
+.small-size {
+  width: 500px;
+  height: 200px;
 }
 .modal-head {
   height: 50px;
