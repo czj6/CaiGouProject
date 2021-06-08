@@ -3,6 +3,7 @@
     <div class="logo-box">
       <img src="../assets/ed.png" >
       <span id="UI" @click="login">菜购</span>
+
     </div>
     <div class="form-box">
       <div class="login_form_left" >
