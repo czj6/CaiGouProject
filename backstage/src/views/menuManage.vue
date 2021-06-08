@@ -12,7 +12,7 @@
       </template>
 
       <template v-slot:contentBox>
-        <div class="contentBox">
+        <div class="contentBox" v-show="currentPage.length!==0">
           <div v-for="item in currentPage" :key="item.id" class="item">
             <div class="item-img-box">
               <img :src="item.avatar" alt="">
@@ -22,6 +22,47 @@
               <p>标签：{{item.tags}}</p>
             </div>
             <div class="btn" v-on:click="openDelModal(item.id)">删除</div>
+          </div>
+        </div>
+        <div class="contentBox" v-show="currentPage.length==0">
+          <div class="item item-skeleton">
+            <content-loader
+              primaryColor="#f3f3f3"
+              secondaryColor="#cccccc"
+              width="881"
+              height="135"
+            >
+              <rect x="20" y="20" rx="3" ry="3" width="75" height="100" />
+              <rect x="135" y="45" rx="10" ry="10" width="100" height="16"></rect>
+              <rect x="135" y="75" rx="10" ry="10" width="150" height="16"></rect>
+              <rect x="710" y="60" rx="10" ry="10" width="56" height="26"></rect>
+            </content-loader>
+          </div>
+          <div class="item item-skeleton">
+            <content-loader
+              primaryColor="#f3f3f3"
+              secondaryColor="#cccccc"
+              width="881"
+              height="135"
+            >
+              <rect x="20" y="20" rx="3" ry="3" width="75" height="100" />
+              <rect x="135" y="45" rx="10" ry="10" width="100" height="16"></rect>
+              <rect x="135" y="75" rx="10" ry="10" width="150" height="16"></rect>
+              <rect x="710" y="60" rx="10" ry="10" width="56" height="26"></rect>
+            </content-loader>
+          </div>
+          <div class="item item-skeleton">
+            <content-loader
+              primaryColor="#f3f3f3"
+              secondaryColor="#cccccc"
+              width="881"
+              height="135"
+            >
+              <rect x="20" y="20" rx="3" ry="3" width="75" height="100" />
+              <rect x="135" y="45" rx="10" ry="10" width="100" height="16"></rect>
+              <rect x="135" y="75" rx="10" ry="10" width="150" height="16"></rect>
+              <rect x="710" y="60" rx="10" ry="10" width="56" height="26"></rect>
+            </content-loader>
           </div>
         </div>
       </template>
@@ -91,13 +132,16 @@ import container from '../components/container/container'
 import modal from '../components/modal/modal'
 import {Pagination, Upload} from 'element-ui'
 import storage from '../storage/storage'
+import { ContentLoader} from 'vue-content-loader'
+
 export default {
   name: 'menuManage',
   components: {
     container,
     [Pagination.name]: Pagination,
     [Upload.name]: Upload,
-    modal
+    modal,
+    ContentLoader
   },
   data() {
     return {
@@ -130,6 +174,7 @@ export default {
       this.flag = 1
       this.currentNum = 1
       this.likeMune = []
+      this.currentPage = []
       let res = await this.axios.get('http://localhost:8083/menu/findLike',{
         params: {
           name: this.keyword,
@@ -145,6 +190,7 @@ export default {
     },
     test(e) {
       this.currentNum = e
+      this.currentPage = []
       this.searchByPage()
     },
    async searchByPage() {

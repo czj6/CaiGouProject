@@ -19,8 +19,8 @@
         </div>
       </template>
       <template v-slot:contentBox>
-        <div class="contentBox">
-          <div v-for="item in currentPage" :key="item.id" class="item" @click="gotoDetail">
+        <div class="contentBox" v-show="currentPage.length!==0">
+          <div v-for="item in currentPage" :key="item.id" class="item" @click="gotoDetail(item)">
             <div class="item-img-box">
               <img :src="item.avatar" alt="">
             </div>
@@ -29,7 +29,48 @@
               <p>标签：{{item.tags}}</p>
             </div>
             <div v-if="item.status==1" class="btn">已上架</div>
-            <div v-if="item.status==0" class="down-btn">已下架</div>
+            <div v-if="item.status==2" class="down-btn">已下架</div>
+          </div>
+        </div>
+        <div class="contentBox" v-show="currentPage.length==0">
+          <div class="item item-skeleton">
+            <content-loader
+              primaryColor="#f3f3f3"
+              secondaryColor="#cccccc"
+              width="881"
+              height="135"
+            >
+              <rect x="20" y="20" rx="3" ry="3" width="75" height="100" />
+              <rect x="135" y="45" rx="10" ry="10" width="100" height="16"></rect>
+              <rect x="135" y="75" rx="10" ry="10" width="150" height="16"></rect>
+              <rect x="710" y="60" rx="10" ry="10" width="56" height="26"></rect>
+            </content-loader>
+          </div>
+          <div class="item item-skeleton">
+            <content-loader
+              primaryColor="#f3f3f3"
+              secondaryColor="#cccccc"
+              width="881"
+              height="135"
+            >
+              <rect x="20" y="20" rx="3" ry="3" width="75" height="100" />
+              <rect x="135" y="45" rx="10" ry="10" width="100" height="16"></rect>
+              <rect x="135" y="75" rx="10" ry="10" width="150" height="16"></rect>
+              <rect x="710" y="60" rx="10" ry="10" width="56" height="26"></rect>
+            </content-loader>
+          </div>
+          <div class="item item-skeleton">
+            <content-loader
+              primaryColor="#f3f3f3"
+              secondaryColor="#cccccc"
+              width="881"
+              height="135"
+            >
+              <rect x="20" y="20" rx="3" ry="3" width="75" height="100" />
+              <rect x="135" y="45" rx="10" ry="10" width="100" height="16"></rect>
+              <rect x="135" y="75" rx="10" ry="10" width="150" height="16"></rect>
+              <rect x="710" y="60" rx="10" ry="10" width="56" height="26"></rect>
+            </content-loader>
           </div>
         </div>
       </template>
@@ -55,11 +96,14 @@
 import container from '../components/container/container'
 import {Pagination} from 'element-ui'
 import storage from '../storage/storage'
+import { ContentLoader} from 'vue-content-loader'
+
 export default {
   name: 'menuList',
   components: {
     container,
-    [Pagination.name]: Pagination
+    [Pagination.name]: Pagination,
+    ContentLoader
   },
   data() {
     return {
@@ -84,6 +128,7 @@ export default {
       this.flag = 1
       this.currentNum = 1
       this.likeMune = []
+      this.currentPage = []
       let res = await this.axios.get('http://localhost:8083/menu/findLike',{
         params: {
           name: this.keyword,
@@ -99,6 +144,7 @@ export default {
     },
     test(e) {
       this.currentNum = e
+      this.currentPage = []
       this.searchByPage()
     },
     async searchByPage() {
@@ -134,8 +180,10 @@ export default {
         this.currentPage = this.likeMune[this.currentNum].slice(2)
       }
     },
-    gotoDetail() {
-      console.log(2);
+    gotoDetail(item) {
+      this.$store.dispatch('saveItem',item);
+      this.$router.push({path: `/detail/${item.id}`})
+
     }
   },
   created() {
@@ -207,6 +255,7 @@ export default {
   display: flex;
   align-items: center;
 }
+
 .contentBox .item .item-text {
   width: 535px;
   overflow: hidden;

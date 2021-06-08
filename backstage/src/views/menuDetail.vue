@@ -3,14 +3,14 @@
     <head-bar title="菜谱详情"></head-bar>
     <div class="detail-container">
       <div class="introduce">
-        <img src="../assets/test.jpg" alt="">
+        <img :src="item.avatar" alt="">
         <div>
           <p>
-            <span class="font-bold">菜谱名称：</span> <input class="menu-name" type="text" v-model="menuName">
+            <span class="font-bold">菜谱名称：</span> <input class="menu-name" type="text" v-model="item.name">
           </p>
           <p>
             <span class="font-bold">步骤表述：</span><br/>
-            <textarea class="menu-process" name="" id="" cols="30" rows="10" v-model="process"></textarea>
+            <textarea class="menu-process" name="" id="" cols="30" rows="10" v-model="item.method"></textarea>
           </p>
         </div>
       </div>
@@ -40,14 +40,16 @@
         </div>
       </div>
       <div class="btn-group">
-        <div class="down">下架</div>
-        <div class="update">修改</div>
+        <div v-if="item.status == 1" class="down" @click="changeStatus">下架</div>
+        <div v-else class="down up-btn" @click="changeStatus">上架</div>
+        <div class="update" @click="updateMsg">修改</div>
       </div>
     </div>
   </div>
 </template>
 <script>
 import headBar from '../components/head/head'
+import storage from '../storage/storage'
 export default {
   name: 'menuDetail',
   components: {
@@ -55,9 +57,32 @@ export default {
   },
   data() {
     return {
+      item: {},
       menuName: '宫保鸡丁',
       process: '打的范德萨发顺丰2fdafdfd333333333333333333333333333333333'
     }
+  },
+  methods:{
+    async updateMsg() {
+      let res = await this.axios.post('http://localhost:8083/menu/updateMenu',this.item,{
+        headers: {
+          token: this.token
+        }
+      })
+      if (res.data.code == 0) {
+        this.$message.success("修改成功")
+      }else {
+        this.$message.error("修改失败")
+      }
+    },
+    async changeStatus() {
+      this.item.status = this.item.status == 1? 2: 1;
+      await this.updateMsg()
+    }
+  },
+  created() {
+    this.item = this.$store.state.item;
+    this.token = storage.getItem('token')
   }
 }
 </script>
@@ -154,6 +179,9 @@ export default {
   line-height: 40px;
   border-radius: 8px;
   margin-right: 20px;
+}
+.up-btn{
+  background-color: #07EB31;
 }
 .update {
   width: 80px;
