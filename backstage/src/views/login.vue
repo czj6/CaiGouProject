@@ -71,7 +71,7 @@ import storage from '../storage/storage'
           this.$message.error('请输入密码');
           return;
         }
-        let res = await this.axios.post('http://localhost:8083/adminUser/login',{
+        let res = await this.axios.post('/api/adminUser/login',{
           name: this.userName,
           password: this.password
         })

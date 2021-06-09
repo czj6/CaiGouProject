@@ -188,7 +188,7 @@ export default {
   },
   created() {
     this.token = storage.getItem('token');
-    this.axios.get('http://localhost:8083/menu/findAll',{
+    this.axios.get('/api/menu/findAll',{
       params: {
         pageNum: 1
       },

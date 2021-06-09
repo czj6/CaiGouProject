@@ -2,47 +2,40 @@
   <div>
     <head-bar title="菜谱详情"></head-bar>
     <div class="detail-container">
-      <div class="introduce">
-        <img :src="item.avatar" alt="">
-        <div>
-          <p>
-            <span class="font-bold">菜谱名称：</span> <input class="menu-name" type="text" v-model="item.name">
-          </p>
-          <p>
-            <span class="font-bold">步骤表述：</span><br/>
-            <textarea class="menu-process" name="" id="" cols="30" rows="10" v-model="item.method"></textarea>
-          </p>
+      <div class="main-container">
+        <h1 class="detail-title" contenteditable="true">{{item.name}}</h1>
+        <div class="detail-img-wrap">
+          <img :src="item.avatar" alt="" class="detail-img">
         </div>
-      </div>
-      <div class="material">
-        <p>用料</p>
-        <div class="material-box">
-          <div class="material-item">
-            <img src="../assets/test.jpg" alt="">
-            <span>鸡肉</span>
-            <span>500g</span>
-          </div>
-          <div class="material-item">
-            <img src="../assets/test.jpg" alt="">
-            <span>鸡肉</span>
-            <span>500g</span>
-          </div>
-          <div class="material-item">
-            <img src="../assets/test.jpg" alt="">
-            <span>鸡肉</span>
-            <span>500g</span>
-          </div>
-          <div class="material-item">
-            <img src="../assets/test.jpg" alt="">
-            <span>鸡肉</span>
-            <span>500g</span>
+        <div class="detail-material">
+          <h4>食材用料</h4>
+          <div class="material-wrap">
+            <div class="material-item">
+              瘦肉 适量
+            </div>
+            <div class="material-item">
+              瘦肉 适量
+            </div>
+            <div class="material-item">
+              瘦肉 适量
+            </div>
           </div>
         </div>
+        <div class="detail-process">
+          <h4>{{item.name}}的做法</h4>
+          <div class="process-wrap">
+            <div class="process-item" v-for="item in process" :key="item.index">
+              <img :src="item.imgUrl" alt="" class="process-item-img left">
+              <p class="process-item-text">{{item.text}}</p>
+            </div>
+
+          </div>
+        </div>
+
       </div>
       <div class="btn-group">
-        <div v-if="item.status == 1" class="down" @click="changeStatus">下架</div>
-        <div v-else class="down up-btn" @click="changeStatus">上架</div>
-        <div class="update" @click="updateMsg">修改</div>
+        <div class="down">下架</div>
+        <div class="update">修改</div>
       </div>
     </div>
   </div>
@@ -58,8 +51,9 @@ export default {
   data() {
     return {
       item: {},
+      id: '',
       menuName: '宫保鸡丁',
-      process: '打的范德萨发顺丰2fdafdfd333333333333333333333333333333333'
+      process: []
     }
   },
   methods:{
@@ -83,52 +77,90 @@ export default {
   created() {
     this.item = this.$store.state.item;
     this.token = storage.getItem('token')
+    this.id = this.$route.params.id
+    var arr = this.item.method.split('\n')
+    arr.pop()
+    console.log(this.item);
+    for (let i = 0; i < arr.length; i+=3) {
+      let obj = {
+        text: arr[i]+","+arr[i+2],
+        imgUrl: arr[i+1]
+      }
+      this.process.push(obj)
+    }
   }
 }
 </script>
 <style scoped>
 .detail-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin-top: 60px;
-  padding: 20px 50px;
+  padding: 15px 50px;
+  background-color: #EEECE9;
 }
-.introduce {
+.main-container {
+  margin: 0 auto;
+  background-color: #fff;
+  width: 600px;
+  border: 1px solid transparent;
+
+  padding: 10px 20px;
+}
+.detail-title {
+  text-align: center;
+}
+.detail-img-wrap {
+  text-align: center;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #ddd;
+}
+.detail-img {
+  width: 100%;
+  height: auto;
+}
+.material-wrap {
   display: flex;
-  align-items: center;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #ccc;
+  flex-wrap: wrap;
 }
-.introduce img {
+.material-item {
+  width: 50%;
+  height: 50px;
+  line-height: 50px;
+  padding: 0 10px;
+  box-sizing: border-box;
+
+  border: 1px solid #ddd;
+}
+
+.detail-process {
+  margin-top: 60px;
+}
+
+.process-item {
+  height: 200px;
+  padding: 10px 0;
+  border-bottom: 1px dotted #ddd;
+  overflow: hidden;
+}
+.process-item:hover {
+  background-color: #FFF8D8;
+}
+.process-item p {
+  margin: 0;
+  overflow: hidden;
+  font-size: 15px;
+  line-height: 24px;
+}
+.process-item img {
+  height: 200px;
   width: 250px;
-  height: 100%;
-  margin-right: 200px;
 }
-.font-bold {
-  font-size: 16px;
-  font-weight: bold;
+.left {
+  float: left;
+  margin-right: 30px;
 }
 
-.menu-name {
-  border: 1px solid #ddd;
-  height: 30px;
-  width: 200px;
-  font-size: 14px;
-  outline: none;
-}
 
-.menu-process {
-  border: 1px solid #ddd;
-  font-size: 13px;
-  width: 282px;
-  resize: none;
-  outline: none;
-  line-height: 20px;
-  overflow-y: scroll;
-}
+
+
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -144,23 +176,6 @@ export default {
     border-radius: 6px;
 }
 
-.material-box {
-  height: 250px;
-  overflow-y: scroll;
-}
-
-.material-item{
-  display: flex;
-  align-items: center;
-}
-.material-item img{
-  width: 100px;
-  height: 100%;
-  margin-right: 50px;
-}
-.material-item span:nth-child(3) {
-  margin-left: 200px;
-}
 
 .btn-group {
   position: fixed;
