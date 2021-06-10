@@ -75,7 +75,6 @@ import storage from '../storage/storage'
           name: this.userName,
           password: this.password
         })
-        console.log(res.data);
         if (res.data.adminUser) {
           storage.setItem('token',res.data.token)
           if (this.radio == 1) {

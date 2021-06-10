@@ -10,15 +10,10 @@
         <div class="detail-material">
           <h4>食材用料</h4>
           <div class="material-wrap">
-            <div class="material-item">
-              瘦肉 适量
+            <div class="material-item" v-for="item in foodList" :key="item.id">
+              {{item.ingredient}} {{item.weight}}
             </div>
-            <div class="material-item">
-              瘦肉 适量
-            </div>
-            <div class="material-item">
-              瘦肉 适量
-            </div>
+
           </div>
         </div>
         <div class="detail-process">
@@ -34,8 +29,9 @@
 
       </div>
       <div class="btn-group">
-        <div class="down">下架</div>
-        <div class="update">修改</div>
+        <div class="down up-btn" v-if="item.status==2" @click="changeStatus">上架</div>
+        <div class="down" v-if="item.status==1" @click="changeStatus">下架</div>
+        <div class="update" @click="updateMsg">修改</div>
       </div>
     </div>
   </div>
@@ -53,12 +49,13 @@ export default {
       item: {},
       id: '',
       menuName: '宫保鸡丁',
-      process: []
+      process: [],
+      foodList: []
     }
   },
   methods:{
     async updateMsg() {
-      let res = await this.axios.post('http://localhost:8083/menu/updateMenu',this.item,{
+      let res = await this.axios.post('/api/menu/updateMenu',this.item,{
         headers: {
           token: this.token
         }
@@ -74,13 +71,12 @@ export default {
       await this.updateMsg()
     }
   },
-  created() {
+  async created() {
     this.item = this.$store.state.item;
     this.token = storage.getItem('token')
     this.id = this.$route.params.id
     var arr = this.item.method.split('\n')
     arr.pop()
-    console.log(this.item);
     for (let i = 0; i < arr.length; i+=3) {
       let obj = {
         text: arr[i]+","+arr[i+2],
@@ -88,6 +84,15 @@ export default {
       }
       this.process.push(obj)
     }
+    let res = await this.axios.get('/api/menu/findMenuByIdDetail',{
+      params: {
+        id: this.id
+      },
+      headers: {
+        token: this.token
+      }
+    })
+    this.foodList = res.data.data.foodList;
   }
 }
 </script>
@@ -194,6 +199,7 @@ export default {
   line-height: 40px;
   border-radius: 8px;
   margin-right: 20px;
+  cursor: pointer;
 }
 .up-btn{
   background-color: #07EB31;

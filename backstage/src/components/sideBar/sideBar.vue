@@ -35,6 +35,14 @@ export default {
     onChangeStyle(id) {
       this.defaultActive = id
     }
+  },
+  created() {
+    let path = this.$route.path
+    for (const item of this.items) {
+      if (path == item.url) {
+        this.defaultActive = item.id
+      }
+    }
   }
 }
 </script>
