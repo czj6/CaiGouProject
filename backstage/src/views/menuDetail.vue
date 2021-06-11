@@ -99,6 +99,7 @@ export default {
 <style scoped>
 .detail-container {
   padding: 15px 50px;
+  padding-top: 65px;
   background-color: #EEECE9;
 }
 .main-container {

@@ -295,7 +295,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .container {
   background-color: #eee;
   padding: 30px 40px;

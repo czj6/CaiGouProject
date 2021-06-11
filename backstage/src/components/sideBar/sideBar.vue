@@ -51,13 +51,14 @@ export default {
 .sideBar {
   width: 200px;
   background-color: #fff;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   margin-top: 60px;
   border-right: 1px solid #333;
+  box-sizing: border-box;
 }
 .sideBarItemv{
   background-color: #2379EB !important;

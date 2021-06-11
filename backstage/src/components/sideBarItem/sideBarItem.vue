@@ -36,7 +36,8 @@ export default {
   height: 70px;
   text-align: center;
   line-height: 70px;
-  border-bottom: 1px solid #333;
+  border-top: 1px solid hsla(0,0%,100%,.05);
+  border-bottom: 1px solid rgba(0,0,0,.2);
   position: relative;
 }
 .text {

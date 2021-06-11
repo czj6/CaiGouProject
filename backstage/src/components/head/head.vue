@@ -22,12 +22,15 @@ export default {
   height: 60px;
   width: 100%;
   display: flex;
+  top: 0;
+  position: fixed;
   justify-content: space-between;
   align-items: center;
   background-color: #2379EB;
   color: #fff;
   padding: 0 30px;
   box-sizing: border-box;
+  z-index: 11;
   /* border-bottom: 1px solid #333; */
 }
 </style>
