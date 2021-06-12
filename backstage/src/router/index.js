@@ -45,7 +45,7 @@ const routes = [
         component: orderlist
       },
       {
-        path: 'orderdetail',
+        path: 'orderdetail/:id',
         component: orderdetail
       }
     ]

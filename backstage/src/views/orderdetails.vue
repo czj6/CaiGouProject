@@ -1,188 +1,297 @@
 <template>
-<div>
-
-      <head-bar title="订单详情"></head-bar>
-      <div id="ticket">
-
-        <div id="sub">
-          <div id="sub-count">
-            <p id="ID"  class="subTitle">订单编号<br/></p>
-            <p id="meeting-count">{{total}}</p>
-          </div>
-          <div class="line"></div>
-          <div id="sub-info">
-          <p id="ID1"  class="subTitle">用户地址<br/></p>
-            <p id="meeting-count1">{{total1}}</p>
-             <p id="ID2"  class="subTitle2">用户手机号<br/></p>
-            <p id="meeting-count2">{{total2}}</p>
-              <p id="ID3"  class="subTitle3">用户昵称<br/></p>
-            <p id="meeting-count3">{{total3}}</p>
-            <div>
-              <br/>
-
+  <container>
+    <template v-slot:headSection>
+      <div class="headSection">
+        <img src="../assets/back.png" alt="" @click="goBack">
+        订单管理
+      </div>
+    </template>
+    <template v-slot:contentBox>
+      <div class="contentBox">
+        <div class="content-wrap">
+          <div class="card-wrap">
+            <div class="card-item">
+              <div class="card-title">订单编号</div>
+              <div class="card-body" v-if="Object.keys(order).length !==0">{{order.orderid}}</div>
+              <div class="card-body item-skeleton" v-if="Object.keys(order).length ==0">
+                <content-loader
+                  primaryColor="#f3f3f3"
+                  secondaryColor="#cccccc"
+                  width="881"
+                  height="135"
+                >
+                  <rect x="20" y="60" rx="15" ry="15" width="250" height="70" />
+                </content-loader>
+              </div>
+            </div>
+            <div class="card-item">
+              <div class="card-title">订单状态</div>
+              <div class="card-body" v-if="Object.keys(order).length !==0">{{order.status | statusFilter}}</div>
+              <div class="card-body item-skeleton" v-if="Object.keys(order).length ==0">
+                <content-loader
+                  primaryColor="#f3f3f3"
+                  secondaryColor="#cccccc"
+                  width="881"
+                  height="135"
+                >
+                  <rect x="20" y="60" rx="15" ry="15" width="250" height="70" />
+                </content-loader>
+              </div>
+            </div>
+            <div class="card-item">
+              <div class="card-title">创建时间</div>
+              <div class="card-body" v-if="Object.keys(order).length !==0">{{order.createtime | dataFilter}}</div>
+              <div class="card-body item-skeleton" v-if="Object.keys(order).length ==0">
+                <content-loader
+                  primaryColor="#f3f3f3"
+                  secondaryColor="#cccccc"
+                  width="881"
+                  height="135"
+                >
+                  <rect x="20" y="60" rx="15" ry="15" width="250" height="70" />
+                </content-loader>
+              </div>
             </div>
           </div>
-
-          <div id="content">
-            <p id="ID"  class="subTitle">订单内容<br/></p>
-            <p id="meeting-count">{{total}}</p>
+          <div class="card-wrap">
+            <div class="card-item">
+              <div class="card-title">配送地址</div>
+              <div class="card-body" v-if="Object.keys(order).length !==0">{{order.address}}</div>
+              <div class="card-body item-skeleton" v-if="Object.keys(order).length ==0">
+                <content-loader
+                  primaryColor="#f3f3f3"
+                  secondaryColor="#cccccc"
+                  width="881"
+                  height="135"
+                >
+                  <rect x="20" y="60" rx="15" ry="15" width="250" height="70" />
+                </content-loader>
+              </div>
+            </div>
+            <div class="card-item">
+              <div class="card-title">电话</div>
+              <div class="card-body" v-if="Object.keys(order).length !==0">{{order.phone}}</div>
+              <div class="card-body item-skeleton" v-if="Object.keys(order).length ==0">
+                <content-loader
+                  primaryColor="#f3f3f3"
+                  secondaryColor="#cccccc"
+                  width="881"
+                  height="135"
+                >
+                  <rect x="20" y="60" rx="15" ry="15" width="250" height="70" />
+                </content-loader>
+              </div>
+            </div>
+            <div class="card-item">
+              <div class="card-title">交易金额</div>
+              <div class="card-body" v-if="Object.keys(order).length !==0">{{order.priceAll}}</div>
+              <div class="card-body item-skeleton" v-if="Object.keys(order).length ==0">
+                <content-loader
+                  primaryColor="#f3f3f3"
+                  secondaryColor="#cccccc"
+                  width="881"
+                  height="135"
+                >
+                  <rect x="20" y="60" rx="15" ry="15" width="250" height="70" />
+                </content-loader>
+              </div>
+            </div>
           </div>
-          <el-button id="nextpage" style="width: 200px;height: 80px;position:absolute; left:1300px; top:550px; background-color:#2379EB"  type="primary" round  >分拣完成</el-button>
+          <div class="card-wrap last-card-wrap ">
+            <div class="card-item">
+              <div class="card-title">备注信息</div>
+              <div class="card-body" v-if="Object.keys(order).length !==0">{{order.remark}}</div>
+              <div class="card-body item-skeleton" v-if="Object.keys(order).length ==0">
+                <content-loader
+                  primaryColor="#f3f3f3"
+                  secondaryColor="#cccccc"
+                  width="881"
+                  height="135"
+                >
+                  <rect x="20" y="60" rx="15" ry="15" width="250" height="70" />
+                </content-loader>
+              </div>
+            </div>
+            <div class="card-item-hidde"></div>
+            <div class="card-item-hidde"></div>
+          </div>
+          <div class="table-body" v-for="item in menuList" :key="item.id">
+            <div class="menu-title">XXX</div>
+            <div class="table-box">
+              <div class="orderRow">
+                <span>食材id</span>
+                <span>配送食材</span>
+                <span>单价</span>
+                <span>单位重量</span>
+                <span>份数</span>
+              </div>
+               <div class="orderRow" v-for="foods in item.foodList" :key="foods.id">
+                  <span>{{foods.id}}</span>
+                  <span>{{foods.ingredient}}</span>
+                  <span>{{foods.price}}</span>
+                  <span>{{foods.standard_weight}}</span>
+                  <span>{{foods.multiple}}</span>
+                </div>
+            </div>
+          </div>
         </div>
-
       </div>
-
-</div>
+    </template>
+  </container>
 </template>
 
 <script>
-  import headBar from '../components/head/head'
+  import container from '../components/container/container'
   import axios from 'axios'
+  import storage from '../storage/storage'
+  import { ContentLoader} from 'vue-content-loader'
 
   export default {
-    name: 'submeeting',
-
+    name: 'orderdetail',
     data() {
       return {
-        content: '',
-        total:'412312312312412312',
-        total1:'福州大学',
-        total2:'12345678910',
-        total3:"人间失格",
-        tableData: []
-        //tableData: [{info_content:'123'}]
+        token: '',
+        order: {},
+        menuList: []
       }
     },
 
   methods: {
-
+    goBack() {
+      this.$router.go(-1)
+    }
   },
-
+   filters: {
+      dataFilter(val) {
+        if (!val) {
+          return 'xxxx.xx.xx xx:xx:xx'
+        }
+        return val.slice(0,19)
+      },
+      statusFilter(val) {
+        let res = ''
+        switch(val) {
+          case 1 : res = '已送达';break;
+          case 2: res = '已取消'; break;
+          case 3 : res = '派送中'; break;
+          case 4 : res = '已下单'; break;
+        }
+        return res
+      }
+    },
+  async created() {
+    this.token = storage.getItem('token')
+    this.id = this.$route.params.id
+    let res = await this.axios.get('/api/order/findOneDetail',{
+      params: {
+        id: this.id
+      },
+      headers: {
+        token: this.token
+      }
+    })
+    let data = res.data;
+    this.order = {
+      address: data.address,
+      createtime: data.createtime,
+      remark: data.remark,
+      priceAll: data.price,
+      phone: data.phone,
+      status: data.status,
+      orderid: this.id
+    }
+    this.menuList = data.customMenuList
+  },
   components:{
-    headBar
+    container,
+    ContentLoader
   }
 }
 </script>
 
-<style>
-#sub {
-  margin: 0px;
- height:650px;
- width:100%;
-}
-.subTitle {
-
-  font-size: 30px;
-  margin: 15px;
-}
-
-#sub-info {
-position:absolute;
-
-    left:-0px;
-    width:100%;
-    height:210px;
-    top:130px;
-       border: #BBBBBB 2px solid;
-  background-color: #ffffff;
-}
-
-#sub-count{
-  position:absolute;
-    left:-0px;
-    width:100%;
-    height:70px;
-    top:30px;
-       border: #BBBBBB 2px solid;
-  background-color: #ffffff;
-}
-
-#meeting-count{
- position:absolute;
-    left:1300px;
-    top:13px;
-
-}
-
-.line{
-  height: 1px;
-
-
-}
-
-.info{
-  border-radius: 5px;
-  width:400px;
-  height:35px;
-
-  float: right;
-}
-#send{
-  float:right;
-  margin-right: 15px;
-  margin-left:15px;
-}
-#ticket{
-  position:absolute;
-    left:8px;
-    top:76px;
-  background-color: #eeeeee;
-   width:99%;
-}
-#ID{
+<style scoped>
+.headSection {
+  height: 70px;
+  border-bottom: 1px solid #ebeef5;
   font-size: 20px;
-   position:absolute;
-    left:8px;
-    top:10px;
+  padding: 0 30px;
+  display: flex;
+  align-items: center;
 }
-#ID1{
-  font-size: 20px;
-   position:absolute;
-    left:10px;
-    top:20px;
+.contentBox {
+  padding: 15px;
+  background-color: #FDFDFD;
 }
-#meeting-count1{
- position:absolute;
-    left:1350px;
-    top:14px;
-     font-size: 20px;
-
-}
-#ID2{
-  font-size: 20px;
-   position:absolute;
-    left:20px;
-    top:70px;
-}
-#ID3{
-  font-size: 20px;
-   position:absolute;
-    left:25px;
-    top:127px;
-}
-#meeting-count2{
- position:absolute;
-    left:1330px;
-    top:70px;
-     font-size: 20px;
-
-}
-#meeting-count3{
- position:absolute;
-    left:1350px;
-    top:127px;
-     font-size: 20px;
-
-}
-#content{
-  position:absolute;
-
-    left:-0px;
-    width:100%;
-    height:210px;
-    top:400px;
-       border: #BBBBBB 2px solid;
-  background-color: #ffffff;
+.content-wrap {
+  border-radius: 4px;
+  background-color: #fff;
+  box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
+  border: 1px solid #ebeef5;
 }
 
+.card-wrap {
+  width: 100%;
+  min-width: 800px;
+  display: flex;
+  justify-content: space-around;
+  margin-top: 25px;
+}
+.last-card-wrap {
+  padding-bottom: 40px;
+  border-bottom: 1px solid #ebeef5;
+}
+.card-item {
+  width: 25%;
+  height: 120px;
+  border: 1px solid #ebeef5;
+  border-radius: 4px;
+}
+.card-item-hidde {
+  width: 25%;
+  height: 120px;
+  border-radius: 4px;
+  visibility: hidden;
+}
+.card-title {
+  height: 50px;
+  line-height: 50px;
+  border-bottom: 1px solid #ebeef5;
+  padding-left: 15px;
+  font-size: 16px;
+}
+.card-body {
+  height: 70px;
+  line-height: 70px;
+  padding-left: 15px;
+  font-size: 16px;
+}
+.menu-title {
+  border: 1px solid #ebeef5;
+  width: 200px;
+  border-bottom: none;
+  height: 50px;
+  line-height: 50px;
+  padding: 0 15px;
+  text-align: center;
+}
+.table-body{
+  padding: 10px 15px;
+  margin: 20px 0;
+}
+.table-box {
+  border: 1px solid #ebeef5;
+}
+.orderRow {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  min-width: 700px;
+  height: 50px;
+  line-height: 50px;
+  border-bottom: 1px solid #ebeef5;
+  padding: 0 20px;
+}
+.orderRow span{
+  flex: 1;
+}
 </style>

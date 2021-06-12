@@ -27,13 +27,32 @@
                   <span>创建时间</span>
                   <span>操作</span>
                 </div>
-                <div class="orderRow" v-for="item in tableData" :key="item.id">
-                  <span>{{item.id}}</span>
-                  <span>{{item.price}}</span>
-                  <span>{{item.status | statusFilter}}</span>
-                  <span>{{item.createtime | dataFilter}}</span>
-                  <span>查看详情</span>
+                <div v-if="tableData.length !== 0">
+                  <div class="orderRow" v-for="item in tableData" :key="item.id">
+                    <span>{{item.id}}</span>
+                    <span>{{item.price}}</span>
+                    <span>{{item.status | statusFilter}}</span>
+                    <span>{{item.createtime | dataFilter}}</span>
+                    <span>
+                      <router-link tag="span" :to="'/supermarket/orderdetail/'+item.id">查看详情</router-link>
+                    </span>
+                  </div>
                 </div>
+                <div v-if="tableData.length ==0">
+                  <div class="orderRow"  v-for="n in 10" :key="n.index">
+                    <span class="item-skeleton" v-for="k in 5" :key="k.index">
+                      <content-loader
+                        primaryColor="#f3f3f3"
+                        secondaryColor="#cccccc"
+                        width="881"
+                        height="135"
+                      >
+                        <rect x="20" y="60" rx="15" ry="15" width="150" height="70" />
+                      </content-loader>
+                    </span>
+                  </div>
+                </div>
+
               </div>
 
             </div>
@@ -60,6 +79,8 @@ import sideBar from '../components/sideBar/sideBar'
 import container from '../components/container/container'
 import {Pagination} from 'element-ui'
 import storage from '../storage/storage'
+import { ContentLoader} from 'vue-content-loader'
+
 export default {
     data(){
         return{
@@ -107,7 +128,8 @@ export default {
       headBar,
       sideBar,
       container,
-      [Pagination.name]: Pagination
+      [Pagination.name]: Pagination,
+      ContentLoader
     },
 }
 </script>
@@ -172,9 +194,13 @@ export default {
   border-bottom: 1px solid #ebeef5;
 }
 .orderRow span {
+  white-space: nowrap;
+  overflow: hidden;
   flex: 1;
 }
-
+.orderRow span:last-child {
+  cursor: pointer;
+}
 .defaultBtn {
   display: inline-block;
   padding: 10px 20px;
