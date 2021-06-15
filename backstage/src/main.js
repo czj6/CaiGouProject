@@ -28,6 +28,24 @@ Vue.component(Tabs.name, Tabs)
 
 Vue.use(VueAxios, axios)
 Vue.prototype.$message = Message;
+axios.defaults.baseURL = '/api';
+axios.defaults.timeout = 8000 //如果8秒了还没请求返回数据，就终止
+
+axios.interceptors.response.use(function(response) {
+  let val = response;//接口返回的数据
+  let path = window.location.pathname;
+
+  if (val.data.code == 401) {
+    window.location.href = '/'
+  }else {
+    return val
+  }
+}, (error) => { //请求的接口地址报错，进行处理
+  let res = error.response;
+  Message.error(res.data.message);
+  return Promise.reject(error);
+})
+
 
 new Vue({
   router,

@@ -71,10 +71,12 @@ import storage from '../storage/storage'
           this.$message.error('请输入密码');
           return;
         }
-        let res = await this.axios.post('/api/adminUser/login',{
+        let res = await this.axios.post('/adminUser/login',{
           name: this.userName,
           password: this.password
         })
+
+
         if (res.data.adminUser) {
           storage.setItem('token',res.data.token)
           if (this.radio == 1) {

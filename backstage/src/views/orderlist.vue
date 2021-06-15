@@ -10,13 +10,13 @@
           <div class="table-container">
             <div class="table-box">
               <div class="table-search-box">
-                <input type="text" class="search-ipt" placeholder="请输入订单号">
-                <select name="" class="search-ipt">
-                  <option value="全部">全部</option>
-                  <option value="已送达">已送达</option>
-                  <option value="已取消">已取消</option>
-                  <option value="配送中">配送中</option>
-                  <option value="已下单">已下单</option>
+                <input type="text" class="search-ipt" v-model="orderId" placeholder="请输入订单号" v-on:keyup.enter="getDate">
+                <select name="" class="search-ipt" v-model="status">
+                  <option value= 0>全部</option>
+                  <option value= 1>已送达</option>
+                  <option value= 2>已取消</option>
+                  <option value= 3>配送中</option>
+                  <option value= 4>已下单</option>
                 </select>
               </div>
               <div class="table-body">
@@ -29,11 +29,12 @@
                 </div>
                 <div v-if="tableData.length !== 0">
                   <div class="orderRow" v-for="item in tableData" :key="item.id">
-                    <span>{{item.id}}</span>
-                    <span>{{item.price}}</span>
-                    <span>{{item.status | statusFilter}}</span>
-                    <span>{{item.createtime | dataFilter}}</span>
-                    <span>
+                    <span v-if="item.id !== -1">{{item.id}}</span>
+                    <span v-if="item.id == -1">查无此订单</span>
+                    <span v-if="item.id !== -1">{{item.price}}</span>
+                    <span v-if="item.id !== -1">{{item.status | statusFilter}}</span>
+                    <span v-if="item.id !== -1">{{item.createtime | dataFilter}}</span>
+                    <span v-if="item.id !== -1">
                       <router-link tag="span" :to="'/supermarket/orderdetail/'+item.id">查看详情</router-link>
                     </span>
                   </div>
@@ -64,7 +65,10 @@
             <el-pagination
               background
               layout="prev, pager, next"
-              :total="50">
+              :page-size="10"
+              :current-page="pageNum"
+               v-on:current-change="changeNum"
+              :total="total">
             </el-pagination>
             <div class="defaultBtn">下一页</div>
           </div>
@@ -74,8 +78,7 @@
 </template>
 
 <script>
-import headBar from '../components/head/head'
-import sideBar from '../components/sideBar/sideBar'
+
 import container from '../components/container/container'
 import {Pagination} from 'element-ui'
 import storage from '../storage/storage'
@@ -86,10 +89,57 @@ export default {
         return{
             tableData:[],
             token: '',
+            orderId: '',
+            status: 0,
+            pageNum: 1,
+            total: 0
         }
     },
     methods: {
+      async getDate() {
+        let res;
+        this.tableData = []
+        if (this.orderId == '') {
+          res = await this.axios.get('/order/findAll',{
+            params: {
+              pageNum: this.pageNum,
+              pageSize: 10,
+              status: this.status
+            },
+            headers: {
+              token: this.token
+            }
+          })
+        }else {
+          res = await this.axios.get('/order/findAll',{
+            params: {
+              pageNum: this.pageNum,
+              pageSize: 10,
+              status: this.status,
+              orderId: this.orderId
+            },
+            headers: {
+              token: this.token
+            }
+          })
+        }
+        if (res.data.data.content.length == 0) {
+          this.total = 1;
+          this.tableData = [
+              {
+                id: -1,
+              }
+          ]
+        }else{
+          this.total = res.data.data.totalElements
+          this.tableData = res.data.data.content
+        }
 
+      },
+      changeNum(e) {
+        this.pageNum = e
+        this.getDate()
+      }
     },
     filters: {
       dataFilter(val) {
@@ -109,24 +159,18 @@ export default {
         return res
       }
     },
+    watch: {
+      status(val, old) {
+        this.getDate()
+      }
+    },
     async created() {
       this.token = storage.getItem('token')
-      let res = await this.axios.get('/api/order/findAll',{
-        params: {
-          pageNum: 1,
-          pageSize: 10
-        },
-        headers: {
-          token: this.token
-        }
-      })
-      this.tableData = res.data.data.content
-      console.log(this.tableData);
+      this.getDate()
     },
     name:'orderlist',
     components: {
-      headBar,
-      sideBar,
+
       container,
       [Pagination.name]: Pagination,
       ContentLoader

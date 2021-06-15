@@ -1,6 +1,6 @@
 <template>
   <div>
-    <head-bar title="菜谱详情"></head-bar>
+    <head-bar title="返回" @back = "goBack"></head-bar>
     <div class="detail-container">
       <div class="main-container">
         <h1 class="detail-title" contenteditable="true">{{item.name}}</h1>
@@ -55,7 +55,7 @@ export default {
   },
   methods:{
     async updateMsg() {
-      let res = await this.axios.post('/api/menu/updateMenu',this.item,{
+      let res = await this.axios.post('/menu/updateMenu',this.item,{
         headers: {
           token: this.token
         }
@@ -65,6 +65,9 @@ export default {
       }else {
         this.$message.error("修改失败")
       }
+    },
+    goBack() {
+      this.$router.go(-1)
     },
     async changeStatus() {
       this.item.status = this.item.status == 1? 2: 1;
@@ -84,7 +87,7 @@ export default {
       }
       this.process.push(obj)
     }
-    let res = await this.axios.get('/api/menu/findMenuByIdDetail',{
+    let res = await this.axios.get('/menu/findMenuByIdDetail',{
       params: {
         id: this.id
       },

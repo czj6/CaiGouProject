@@ -30,6 +30,10 @@ const routes = [
         path: 'manage',
         component: menuManage
       },
+      {
+        path: 'add',
+        component: () => import('../views/menuAdd.vue')
+      }
     ]
   },
   {
@@ -47,6 +51,9 @@ const routes = [
       {
         path: 'orderdetail/:id',
         component: orderdetail
+      },{
+        path: 'statistics',
+        component: () => import('../views/orderStatistics.vue')
       }
     ]
   }

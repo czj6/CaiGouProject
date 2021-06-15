@@ -50,7 +50,7 @@ export default {
 }
 .modal-box {
   width: 650px;
-  height: 450px;
+  height: 400px;
   background-color: #eee;
   position: absolute;
   top: 50%;

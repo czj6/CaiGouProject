@@ -129,7 +129,7 @@ export default {
       this.currentNum = 1
       this.likeMune = []
       this.currentPage = []
-      let res = await this.axios.get('/api/menu/findLike',{
+      let res = await this.axios.get('/menu/findLike',{
         params: {
           name: this.keyword,
           pageNum: this.currentNum
@@ -151,7 +151,7 @@ export default {
       let res;
       if (this.flag == 0) {
         if (this.allMune[this.currentNum] == undefined) {
-          res = await this.axios.get(`/api/menu/findAll`,{
+          res = await this.axios.get(`/menu/findAll`,{
             params: {
               pageNum: this.currentNum
             },
@@ -165,7 +165,7 @@ export default {
         this.currentPage = this.allMune[this.currentNum].slice(2)
       }else if (this.flag == 1) {
         if (this.likeMune[this.currentNum] == undefined) {
-          res = await this.axios.get('/api/menu/findLike',{
+          res = await this.axios.get('/menu/findLike',{
             params: {
               name: this.keyword,
               pageNum: this.currentNum
@@ -188,7 +188,7 @@ export default {
   },
   created() {
     this.token = storage.getItem('token');
-    this.axios.get('/api/menu/findAll',{
+    this.axios.get('/menu/findAll',{
       params: {
         pageNum: 1
       },

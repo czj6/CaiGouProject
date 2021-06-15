@@ -22,6 +22,11 @@ export default {
           id: 1,
           text: '订单列表',
           url: '/supermarket/orderlist'
+        },
+        {
+          id: 2,
+          text: '统计营业额',
+          url: '/supermarket/statistics'
         }
       ]
     }
