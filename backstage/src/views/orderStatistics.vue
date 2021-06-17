@@ -106,7 +106,7 @@ export default {
     this.result = res.data.data
     this.flag = true
     this.option.xAxis.data = this.result.timeTenRecent.reverse();
-    this.option.series[0].data = this.result.profitTenRecent
+    this.option.series[0].data = this.result.profitTenRecent.reverse()
   },
   mounted() {
     window.onresize = () => {

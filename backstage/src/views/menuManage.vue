@@ -69,7 +69,7 @@
 
       <template v-slot:footerSection>
         <div class="footerSection">
-          <div class="defaultBtn">上一页</div>
+          <div class="defaultBtn" @click="lastPage">上一页</div>
           <el-pagination
             background
             layout="prev, pager, next"
@@ -78,39 +78,10 @@
             :total="total"
             v-on:current-change="test">
           </el-pagination>
-          <div class="defaultBtn">下一页</div>
+          <div class="defaultBtn" @click="nextPage">下一页</div>
         </div>
       </template>
     </container>
-    <modal title="新增菜谱" :isShow="isShowModal">
-      <template v-slot:modalBody>
-        <div class="modalBody">
-          <p>
-            <span>菜名：</span>
-            <input type="text" v-model="newName">
-          </p>
-          <p>
-            <span>图片：</span>
-            <input type="text" v-model="newUrl">
-          </p>
-          <p>
-            <span>标签：</span>
-            <input type="text" v-model="newTags">
-
-          </p>
-          <p>
-            <span>步骤：</span>
-            <textarea name="" id="" cols="30" rows="10" v-model="newMethod"></textarea>
-          </p>
-        </div>
-      </template>
-      <template v-slot:modalFooter>
-        <div class="modalFooter">
-          <div class="creatMenu" @click="createMenu">新增</div>
-          <div class="back" @click="closeModal">返回</div>
-        </div>
-      </template>
-    </modal>
     <modal title="确认信息" :isShow="showDelModal" :smallSize="true">
       <template v-slot:modalBody>
         <div class="modalBody">
@@ -235,7 +206,6 @@ export default {
           token: this.token
         }
       })
-      console.log(res);
       if (this.flag == 0) {
         this.allMune.splice(this.currentNum)
       }else if (this.flag == 1) {
@@ -243,6 +213,7 @@ export default {
       }
       await this.searchByPage()
       this.showDelModal = false
+      console.log(res);
       if (res.data.code == 0) {
         this.$message.success('删除成功')
       }else{
@@ -274,7 +245,19 @@ export default {
       }else{
         this.$message.error('添加失败')
       }
-    }
+    },
+    lastPage() {
+      if(this.currentNum > 1){
+        this.currentNum--
+        this.test(this.currentNum)
+      }
+    },
+    nextPage() {
+      if(this.currentNum < this.total/5){
+        this.currentNum++
+        this.test(this.currentNum)
+      }
+    },
   },
   created() {
     this.token = storage.getItem('token');
@@ -369,6 +352,7 @@ export default {
   padding: 10px 15px;
   border-radius: 8px;
   color: #fff;
+  cursor: pointer;
 }
 
 .defaultBtn {
@@ -378,6 +362,7 @@ export default {
   border-radius: 17px;
   color: #fff;
   font-size: 16px;
+  cursor: pointer;
 }
 
 .footerSection {

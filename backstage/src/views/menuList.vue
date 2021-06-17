@@ -8,14 +8,7 @@
             <span>搜索</span>
             <input type="text" v-model="keyword" class="ipt" v-on:keyup.enter="searchByKeyword">
           </div>
-          <div class="cuisine">
-            <span>菜系</span>
-            <select name="" id="" class="sel">
-              <option value="闽">闽菜</option>
-              <option value="粤">粤菜</option>
-              <option value="川">川菜</option>
-            </select>
-          </div>
+
         </div>
       </template>
       <template v-slot:contentBox>
@@ -76,7 +69,7 @@
       </template>
       <template v-slot:footerSection>
         <div class="footerSection">
-          <div class="defaultBtn">上一页</div>
+          <div class="defaultBtn" @click="lastPage">上一页</div>
           <el-pagination
             background
             layout="prev, pager, next"
@@ -85,7 +78,7 @@
             :current-page="currentNum"
             v-on:current-change="test">
           </el-pagination>
-          <div class="defaultBtn">下一页</div>
+          <div class="defaultBtn" @click="nextPage">下一页</div>
         </div>
       </template>
     </container>
@@ -123,6 +116,18 @@ export default {
   methods: {
     logMsg() {
       console.log(1);
+    },
+    lastPage() {
+      if(this.currentNum > 1){
+        this.currentNum--
+        this.test(this.currentNum)
+      }
+    },
+    nextPage() {
+      if(this.currentNum < this.total/5){
+        this.currentNum++
+        this.test(this.currentNum)
+      }
     },
     async searchByKeyword() {
       this.flag = 1
@@ -254,6 +259,7 @@ export default {
   margin: 20px 0;
   display: flex;
   align-items: center;
+  cursor: pointer;
 }
 
 .contentBox .item .item-text {
@@ -290,6 +296,7 @@ export default {
   background-color: #4F97F7;
   border-radius: 17px;
   color: #fff;
+  cursor: pointer;
   font-size: 16px;
 }
 .footerSection {
